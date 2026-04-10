@@ -10,6 +10,6 @@ class ASD_behavior:
 
 
 if __name__ == "__main__":
-    root_dir = r'Y:\HongliWang\Miniscope\ASD'
+    root_dir = r'C:\Users\hongl\Documents\GitHub\ASD_group_work\Data'
     ASD_beh = ASD_behavior(root_dir)
     ASD_beh.average_performance()
