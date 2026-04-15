@@ -57,7 +57,9 @@ class ASD_behavior:
         performance_df = pd.DataFrame(records)
         summary = (
             performance_df.groupby(["group", "day"], as_index=False)["performance"]
-            .mean()
+            .agg(["mean", "std"])
+            .reset_index()
+            .rename(columns={"mean": "performance_mean", "std": "performance_std"})
             .sort_values(["group", "day"])
         )
 
@@ -65,13 +67,29 @@ class ASD_behavior:
         wild_type = (
             summary[summary["group"] == "Wild Type"]
             .set_index("day")
-            .reindex(days)["performance"]
+            .reindex(days)
         )
-        asd = summary[summary["group"] == "ASD"].set_index("day").reindex(days)["performance"]
+        asd = summary[summary["group"] == "ASD"].set_index("day").reindex(days)
 
         plt.figure(figsize=(8, 5))
-        plt.plot(days, wild_type.values, marker="o", linewidth=2, label="Wild Type")
-        plt.plot(days, asd.values, marker="o", linewidth=2, label="ASD")
+        plt.errorbar(
+            days,
+            wild_type["performance_mean"].values,
+            yerr=wild_type["performance_std"].fillna(0).values,
+            marker="o",
+            linewidth=2,
+            capsize=4,
+            label="Wild Type",
+        )
+        plt.errorbar(
+            days,
+            asd["performance_mean"].values,
+            yerr=asd["performance_std"].fillna(0).values,
+            marker="o",
+            linewidth=2,
+            capsize=4,
+            label="ASD",
+        )
         plt.xticks(days, ["Day 1", "Day 2", "Day 3"])
         plt.ylabel("Correctness (%)")
         plt.xlabel("Test Day")
