@@ -253,7 +253,8 @@ class ASD_behavior:
 
 
 if __name__ == "__main__":
+    repo_dir = os.path.dirname(os.path.abspath(__file__))
+    root_dir = os.path.join(repo_dir, "Data")
 
-    root_dir = r"C:\Users\Ding\Desktop\Linda lab\python analysis\ASD_group_work\Data"
     ASD_beh = ASD_behavior(root_dir)
     ASD_beh.average_performance()
