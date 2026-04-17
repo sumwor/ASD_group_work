@@ -37,12 +37,8 @@ class ASD_behavior:
             print("[ERROR] Metadata missing required columns.")
             return {}
 
-        # 🔧 CLEANING STEP (CRITICAL)
         df["AnimalID"] = df["AnimalID"].astype(str).str.strip()
         df["Genotype"] = df["Genotype"].astype(str).str.strip().str.upper()
-
-        print("[DEBUG] Metadata preview:")
-        print(df.head())
 
         return dict(zip(df["AnimalID"], df["Genotype"]))
 
@@ -129,7 +125,7 @@ class ASD_behavior:
         if raw.empty:
             return pd.DataFrame()
 
-        # ✅ assign sessions per animal
+        # assign sessions per animal
         raw["Session"] = None
 
         for animal, sub in raw.groupby("AnimalID"):
@@ -157,9 +153,18 @@ class ASD_behavior:
 
         df = pd.DataFrame(rows)
 
-        # 🔥 KEEP ONLY WT + HET (no Unknown mixing)
+        # keep only WT + HET
         df = df[df["Genotype"].isin(["WT", "HET"])]
 
+        # ✅ FIX: force same number of blocks across ALL animals/sessions
+        block_counts = df.groupby(["AnimalID", "Session"])["Block"].max()
+        max_common_block = block_counts.min()
+
+        print(f"[INFO] Using {max_common_block} blocks (common across all animals)")
+
+        df = df[df["Block"] <= max_common_block]
+
+        # aggregate
         agg = (
             df.groupby(["Genotype", "Session", "Block"])["RewardRate"]
             .agg(mean="mean", sem="sem")
