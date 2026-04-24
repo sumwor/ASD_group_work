@@ -24,6 +24,17 @@ for aa in self.animalID:
         
         idx += 1
         
+def average_performance(self): self = <_main_.ASD_behavior object at
+#calc avg perf. for each session
+nFiles = self.data_index.shape[0]
+ave_performance = np.full((nFiles, 15) np.nan)
+for ii in range(nFiles):
+    behDF = pd.read_csv(self.data_index['BehaviorFile'][ii])
+
+    ii=0
+
+# lines 27 to 31 extablish vector, or how the information is organized in tables
+    
 #nFiles should be 3, bc 3 trials per animal
     #there are two "for" loops because data structured in different layers (by animal,
     #which has 3 csv files per)
