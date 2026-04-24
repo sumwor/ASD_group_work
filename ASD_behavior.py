@@ -27,11 +27,26 @@ for aa in self.animalID:
 def average_performance(self): self = <_main_.ASD_behavior object at
 #calc avg perf. for each session
 nFiles = self.data_index.shape[0]
-ave_performance = np.full((nFiles, 15) np.nan)
+ave_performance = np.full((nFiles, 20) np.nan)
 for ii in range(nFiles):
     behDF = pd.read_csv(self.data_index['BehaviorFile'][ii])
+    nTrials = behDF.shape[0]
+    blockLength = 100
+    nBlock = np.ceil(nTrial/blockLength)
+    for bb in range(int(nBlock)):
+        startTrial=bb*blocklength
+        endTrial = (bb+1)*blockLength-1
+        if endTrial > nTrials:
+            endTrial = nTrials-1
 
-    ii=0
+    avePerf = np.sum(~np.isnan(behDF['reward'][startTrial:endTrial]))
+    ave_performance[ii, bb] = avePerf
+    
+    #i rowm bb column
+    #the bb line above rounds up (if 583 trials, nearest (ceiling) integer is 6)
+    #defining block length  as variable makes it so, if you want to change #trials per block, just edit one variable
+
+    x=1
 
 # lines 27 to 31 extablish vector, or how the information is organized in tables
     
